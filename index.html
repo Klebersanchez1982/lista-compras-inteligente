@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Compras Inteligente</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            background: linear-gradient(90deg, #2c3e50, #4a6491);
+            color: white;
+            border-radius: 15px 15px 0 0;
+            margin-bottom: 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .app-container {
+            background-color: white;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        
+        .summary-bar {
+            display: flex;
+            justify-content: space-around;
+            background-color: #4a6491;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .summary-item {
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .summary-value {
+            font-size: 2rem;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .summary-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .total-amount {
+            color: #FFD700;
+            font-size: 2.2rem;
+        }
+        
+        .input-section {
+            padding: 25px;
+            border-bottom: 1px solid #eee;
+            background-color: #f8f9fa;
+        }
+        
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .input-group label {
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+            font-size: 0.9rem;
+        }
+        
+        .input-field {
+            padding: 14px;
+            border: 2px solid #e1e5f1;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+        
+        .input-field:focus {
+            border-color: #4a6491;
+            outline: none;
+        }
+        
+        .btn {
+            padding: 14px 25px;
+            background-color: #4a6491;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            background-color: #3a5381;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-add {
+            background-color: #27ae60;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .btn-add:hover {
+            background-color: #219653;
+        }
+        
+        .btn-clear {
+            background-color: #e74c3c;
+            margin-top: 15px;
+            width: 100%;
+        }
+        
+        .btn-clear:hover {
+            background-color: #c0392b;
+        }
+        
+        .categories-section {
+            padding: 20px 25px;
+            border-bottom: 1px solid #eee;
+            background-color: #f1f5f9;
+        }
+        
+        .categories-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #444;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .categories-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .category-btn {
+            padding: 10px 20px;
+            background-color: white;
+            border: 2px solid #e1e5f1;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .category-btn:hover {
+            background-color: #f0f4f8;
+            transform: translateY(-2px);
+        }
+        
+        .category-btn.active {
+            background-color: #4a6491;
+            color: white;
+            border-color: #4a6491;
+        }
+        
+        .category-icon {
+            font-size: 1rem;
+        }
+        
+        .items-section {
+            padding: 25px;
+        }
+        
+        .section-title {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: #444;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .filter-options {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .filter-btn {
+            padding: 8px 15px;
+            background-color: #f0f4f8;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        
+        .filter-btn.active {
+            background-color: #4a6491;
+            color: white;
+        }
+        
+        .items-list {
+            list-style-type: none;
+        }
+        
+        .item-header {
+            display: grid;
+            grid-template-columns: 3fr 1fr 1fr 1fr 1fr;
+            padding: 15px;
+            background-color: #f1f5f9;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .item-row {
+            display: grid;
+            grid-template-columns: 3fr 1fr 1fr 1fr 1fr;
+            align-items: center;
+            padding: 18px 15px;
+            margin-bottom: 12px;
+            background-color: #f9fafc;
+            border-radius: 10px;
+            border-left: 5px solid #4a6491;
+            transition: all 0.2s;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .item-row:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .item-row.comprado {
+            opacity: 0.7;
+            border-left-color: #27ae60;
+            background-color: #f0f9f4;
+        }
+        
+        .item-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .item-checkbox {
+            transform: scale(1.3);
+            cursor: pointer;
+        }
+        
+        .item-category {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background-color: #f0f4f8;
+        }
+        
+        .category-hortifruti {
+            background-color: #e8f6f3;
+            color: #27ae60;
+        }
+        
+        .category-padaria {
+            background-color: #fef9e7;
+            color: #f39c12;
+        }
+        
+        .category-carnes {
+            background-color: #fdedec;
+            color: #e74c3c;
+        }
+        
+        .category-laticinios {
+            background-color: #eaf2f8;
+            color: #3498db;
+        }
+        
+        .category-bebidas {
+            background-color: #f4ecf7;
+            color: #8e44ad;
+        }
+        
+        .category-limpeza {
+            background-color: #e8f8f5;
+            color: #16a085;
+        }
+        
+        .category-outros {
+            background-color: #f2f3f4;
+            color: #7f8c8d;
+        }
+        
+        .item-quantity {
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .item-price {
+            font-weight: 600;
+            text-align: center;
+            color: #2c3e50;
+        }
+        
+        .item-total {
+            font-weight: bold;
+            text-align: center;
+            color: #27ae60;
+        }
+        
+        .item-actions {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: #777;
+            transition: all 0.3s;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .action-btn:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .edit-btn:hover {
+            color: #3498db;
+        }
+        
+        .delete-btn:hover {
+            color: #e74c3c;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+        }
+        
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #ccc;
+        }
+        
+        footer {
+            text-align: center;
+            color: #555;
+            padding: 20px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        @media (max-width: 768px) {
+            .item-header, .item-row {
+                grid-template-columns: 2fr 1fr 1fr 1fr;
+            }
+            
+            .item-category {
+                display: none;
+            }
+            
+            .input-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .categories-grid {
+                justify-content: center;
+            }
+            
+            .section-title {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .filter-options {
+                align-self: flex-start;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .item-header, .item-row {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+            
+            .item-price {
+                display: none;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .summary-value {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-shopping-cart"></i> Lista de Compras Inteligente</h1>
+            <p class="subtitle">Organize suas compras por categoria, controle gastos e nunca mais esqueça um item</p>
+        </header>
+        
+        <div class="app-container">
+            <div class="summary-bar">
+                <div class="summary-item">
+                    <span class="summary-value" id="total-items">0</span>
+                    <span class="summary-label">Itens na Lista</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-value" id="pending-items">0</span>
+                    <span class="summary-label">Itens Pendentes</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-value" id="purchased-items">0</span>
+                    <span class="summary-label">Itens Comprados</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-value total-amount" id="total-amount">R$ 0,00</span>
+                    <span class="summary-label">Valor Total</span>
+                </div>
+            </div>
+            
+            <div class="input-section">
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label for="item-name"><i class="fas fa-tag"></i> Nome do Item</label>
+                        <input type="text" id="item-name" class="input-field" placeholder="Ex: Arroz, Leite, Maçã..." autocomplete="off">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="item-quantity"><i class="fas fa-balance-scale"></i> Quantidade</label>
+                        <input type="number" id="item-quantity" class="input-field" placeholder="Ex: 2" min="1" value="1">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="item-unit"><i class="fas fa-weight"></i> Unidade</label>
+                        <select id="item-unit" class="input-field">
+                            <option value="un">Unidade</option>
+                            <option value="kg">Quilo</option>
+                            <option value="g">Grama</option>
+                            <option value="l">Litro</option>
+                            <option value="ml">Mililitro</option>
+                            <option value="cx">Caixa</option>
+                            <option value="pct">Pacote</option>
+                            <option value="dz">Dúzia</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="item-price"><i class="fas fa-dollar-sign"></i> Preço Unitário (R$)</label>
+                        <input type="number" id="item-price" class="input-field" placeholder="Ex: 5.99" min="0" step="0.01">
+                    </div>
+                </div>
+                
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label for="item-category"><i class="fas fa-layer-group"></i> Categoria</label>
+                        <select id="item-category" class="input-field">
+                            <option value="hortifruti">Hortifruti</option>
+                            <option value="padaria">Padaria</option>
+                            <option value="carnes">Carnes</option>
+                            <option value="laticinios">Laticínios</option>
+                            <option value="bebidas">Bebidas</option>
+                            <option value="limpeza">Limpeza</option>
+                            <option value="outros">Outros</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="item-notes"><i class="fas fa-sticky-note"></i> Observações (Opcional)</label>
+                        <input type="text" id="item-notes" class="input-field" placeholder="Ex: Integral, Sem lactose...">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="item-priority"><i class="fas fa-exclamation-circle"></i> Prioridade</label>
+                        <select id="item-priority" class="input-field">
+                            <option value="baixa">Baixa</option>
+                            <option value="media" selected>Média</option>
+                            <option value="alta">Alta</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <button id="add-item-btn" class="btn btn-add">
+                            <i class="fas fa-plus-circle"></i> Adicionar à Lista
+                        </button>
+                    </div>
+                </div>
+                
+                <button id="clear-list-btn" class="btn btn-clear">
+                    <i class="fas fa-trash-alt"></i> Limpar Lista de Compras
+                </button>
+            </div>
+            
+            <div class="categories-section">
+                <h3 class="categories-title"><i class="fas fa-filter"></i> Filtrar por Categoria</h3>
+                <div class="categories-grid">
+                    <button class="category-btn active" data-category="todos">
+                        <i class="fas fa-th-large category-icon"></i> Todos
+                    </button>
+                    <button class="category-btn" data-category="hortifruti">
+                        <i class="fas fa-apple-alt category-icon"></i> Hortifruti
+                    </button>
+                    <button class="category-btn" data-category="padaria">
+                        <i class="fas fa-bread-slice category-icon"></i> Padaria
+                    </button>
+                    <button class="category-btn" data-category="carnes">
+                        <i class="fas fa-drumstick-bite category-icon"></i> Carnes
+                    </button>
+                    <button class="category-btn" data-category="laticinios">
+                        <i class="fas fa-cheese category-icon"></i> Laticínios
+                    </button>
+                    <button class="category-btn" data-category="bebidas">
+                        <i class="fas fa-wine-bottle category-icon"></i> Bebidas
+                    </button>
+                    <button class="category-btn" data-category="limpeza">
+                        <i class="fas fa-pump-soap category-icon"></i> Limpeza
+                    </button>
+                </div>
+            </div>
+            
+            <div class="items-section">
+                <h3 class="section-title">
+                    <span><i class="fas fa-list"></i> Itens da Lista</span>
+                    <div class="filter-options">
+                        <button class="filter-btn active" data-filter="todos">Todos</button>
+                        <button class="filter-btn" data-filter="pendentes">Pendentes</button>
+                        <button class="filter-btn" data-filter="comprados">Comprados</button>
+                    </div>
+                </h3>
+                
+                <div class="item-header">
+                    <div>Item</div>
+                    <div>Quantidade</div>
+                    <div>Preço</div>
+                    <div>Total</div>
+                    <div>Ações</div>
+                </div>
+                
+                <ul class="items-list" id="items-list">
+                    <!-- Itens serão inseridos aqui via JavaScript -->
+                    <div class="empty-state" id="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-shopping-basket"></i>
+                        </div>
+                        <h3>Sua lista de compras está vazia</h3>
+                        <p>Adicione itens usando o formulário acima para começar</p>
+                    </div>
+                </ul>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Lista de Compras Inteligente &copy; 2026 - Faça compras de forma organizada e econômica</p>
+            <p><i class="fas fa-lightbulb"></i> Dica: Você pode clicar em um item para marcá-lo como comprado!</p>
+        </footer>
+    </div>
+
+    <script>
+        // Dados iniciais - itens salvos no localStorage ou array vazio
+        let shoppingList = JSON.parse(localStorage.getItem('shoppingList')) || [];
+        
+        // Elementos do DOM
+        const itemNameInput = document.getElementById('item-name');
+        const itemQuantityInput = document.getElementById('item-quantity');
+        const itemUnitSelect = document.getElementById('item-unit');
+        const itemPriceInput = document.getElementById('item-price');
+        const itemCategorySelect = document.getElementById('item-category');
+        const itemNotesInput = document.getElementById('item-notes');
+        const itemPrioritySelect = document.getElementById('item-priority');
+        const addItemBtn = document.getElementById('add-item-btn');
+        const clearListBtn = document.getElementById('clear-list-btn');
+        const itemsList = document.getElementById('items-list');
+        const emptyState = document.getElementById('empty-state');
+        const totalItemsEl = document.getElementById('total-items');
+        const pendingItemsEl = document.getElementById('pending-items');
+        const purchasedItemsEl = document.getElementById('purchased-items');
+        const totalAmountEl = document.getElementById('total-amount');
+        
+        // Variáveis para filtros
+        let currentCategoryFilter = 'todos';
+        let currentStatusFilter = 'todos';
+        
+        // Mapeamento de categorias para ícones e classes
+        const categoryMap = {
+            hortifruti: { name: 'Hortifruti', icon: 'fas fa-apple-alt', class: 'category-hortifruti' },
+            padaria: { name: 'Padaria', icon: 'fas fa-bread-slice', class: 'category-padaria' },
+            carnes: { name: 'Carnes', icon: 'fas fa-drumstick-bite', class: 'category-carnes' },
+            laticinios: { name: 'Laticínios', icon: 'fas fa-cheese', class: 'category-laticinios' },
+            bebidas: { name: 'Bebidas', icon: 'fas fa-wine-bottle', class: 'category-bebidas' },
+            limpeza: { name: 'Limpeza', icon: 'fas fa-pump-soap', class: 'category-limpeza' },
+            outros: { name: 'Outros', icon: 'fas fa-box', class: 'category-outros' }
+        };
+        
+        // Mapeamento de unidades
+        const unitMap = {
+            un: 'un',
+            kg: 'kg',
+            g: 'g',
+            l: 'L',
+            ml: 'ml',
+            cx: 'cx',
+            pct: 'pct',
+            dz: 'dz'
+        };
+        
+        // Inicializar a aplicação
+        document.addEventListener('DOMContentLoaded', function() {
+            renderItems();
+            updateSummary();
+            setupEventListeners();
+            
+            // Adicionar alguns itens de exemplo se a lista estiver vazia
+            if (shoppingList.length === 0) {
+                addExampleItems();
+            }
+        });
+        
+        // Configurar event listeners
+        function setupEventListeners() {
+            // Adicionar item ao clicar no botão
+            addItemBtn.addEventListener('click', addItem);
+            
+            // Adicionar item ao pressionar Enter no campo nome
+            itemNameInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    addItem();
+                }
+            });
+            
+            // Limpar lista
+            clearListBtn.addEventListener('click', clearList);
+            
+            // Filtros de categoria
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remover classe active de todos os botões
+                    document.querySelectorAll('.category-btn').forEach(b => {
+                        b.classList.remove('active');
+                    });
+                    
+                    // Adicionar classe active ao botão clicado
+                    this.classList.add('active');
+                    
+                    // Atualizar filtro de categoria
+                    currentCategoryFilter = this.dataset.category;
+                    renderItems();
+                });
+            });
+            
+            // Filtros de status
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remover classe active de todos os botões
+                    document.querySelectorAll('.filter-btn').forEach(b => {
+                        b.classList.remove('active');
+                    });
+                    
+                    // Adicionar classe active ao botão clicado
+                    this.classList.add('active');
+                    
+                    // Atualizar filtro de status
+                    currentStatusFilter = this.dataset.filter;
+                    renderItems();
+                });
+            });
+        }
+        
+        // Função para adicionar um novo item
+        function addItem() {
+            const itemName = itemNameInput.value.trim();
+            const quantity = parseFloat(itemQuantityInput.value) || 1;
+            const unit = itemUnitSelect.value;
+            const price = parseFloat(itemPriceInput.value) || 0;
+            const category = itemCategorySelect.value;
+            const notes = itemNotesInput.value.trim();
+            const priority = itemPrioritySelect.value;
+            
+            if (itemName === '') {
+                alert('Por favor, digite o nome do item!');
+                itemNameInput.focus();
+                return;
+            }
+            
+            // Criar novo item
+            const newItem = {
+                id: Date.now(),
+                name: itemName,
+                quantity: quantity,
+                unit: unit,
+                price: price,
+                category: category,
+                notes: notes,
+                priority: priority,
+                purchased: false,
+                date: new Date().toLocaleDateString('pt-BR')
+            };
+            
+            // Adicionar ao array de itens
+            shoppingList.push(newItem);
+            
+            // Salvar no localStorage
+            saveList();
+            
+            // Atualizar a interface
+            renderItems();
+            updateSummary();
+            
+            // Limpar campos do formulário
+            itemNameInput.value = '';
+            itemQuantityInput.value = '1';
+            itemPriceInput.value = '';
+            itemNotesInput.value = '';
+            itemNameInput.focus();
+            
+            // Mostrar confirmação
+            showNotification(`${itemName} adicionado à lista!`);
+        }
+        
+        // Função para renderizar a lista de itens
+        function renderItems() {
+            // Limpar a lista
+            itemsList.innerHTML = '';
+            
+            // Filtrar itens baseado nos filtros ativos
+            let filteredItems = [...shoppingList];
+            
+            // Aplicar filtro de categoria
+            if (currentCategoryFilter !== 'todos') {
+                filteredItems = filteredItems.filter(item => item.category === currentCategoryFilter);
+            }
+            
+            // Aplicar filtro de status
+            if (currentStatusFilter === 'pendentes') {
+                filteredItems = filteredItems.filter(item => !item.purchased);
+            } else if (currentStatusFilter === 'comprados') {
+                filteredItems = filteredItems.filter(item => item.purchased);
+            }
+            
+            // Se não houver itens após filtrar, mostrar estado vazio
+            if (filteredItems.length === 0) {
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            // Esconder estado vazio
+            emptyState.style.display = 'none';
+            
+            // Ordenar itens: prioridade alta primeiro, depois pendentes antes de comprados
+            filteredItems.sort((a, b) => {
+                // Ordenar por prioridade
+                const priorityOrder = { alta: 1, media: 2, baixa: 3 };
+                if (priorityOrder[a.priority] !== priorityOrder[b.priority]) {
+                    return priorityOrder[a.priority] - priorityOrder[b.priority];
+                }
+                
+                // Itens pendentes primeiro
+                if (a.purchased !== b.purchased) {
+                    return a.purchased ? 1 : -1;
+                }
+                
+                // Por último, ordenar por nome
+                return a.name.localeCompare(b.name);
+            });
+            
+            // Renderizar cada item
+            filteredItems.forEach(item => {
+                const itemRow = document.createElement('div');
+                itemRow.className = `item-row ${item.purchased ? 'comprado' : ''}`;
+                itemRow.dataset.id = item.id;
+                
+                // Calcular total do item
+                const itemTotal = item.price * item.quantity;
+                
+                // Obter informações da categoria
+                const categoryInfo = categoryMap[item.category] || categoryMap.outros;
+                
+                itemRow.innerHTML = `
+                    <div class="item-name">
+                        <input type="checkbox" class="item-checkbox" ${item.purchased ? 'checked' : ''}>
+                        <span>${item.name}</span>
+                        <span class="item-category ${categoryInfo.class}">
+                            <i class="${categoryInfo.icon}"></i> ${categoryInfo.name}
+                        </span>
+                        ${item.notes ? `<small style="color:#777; font-style:italic;">(${item.notes})</small>` : ''}
+                    </div>
+                    <div class="item-quantity">${item.quantity} ${unitMap[item.unit]}</div>
+                    <div class="item-price">R$ ${item.price.toFixed(2)}</div>
+                    <div class="item-total">R$ ${itemTotal.toFixed(2)}</div>
+                    <div class="item-actions">
+                        <button class="action-btn edit-btn" title="Editar item">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete-btn" title="Excluir item">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                
+                // Adicionar eventos aos elementos do item
+                const checkbox = itemRow.querySelector('.item-checkbox');
+                const editBtn = itemRow.querySelector('.edit-btn');
+                const deleteBtn = itemRow.querySelector('.delete-btn');
+                
+                // Marcar como comprado/pendente
+                checkbox.addEventListener('change', function() {
+                    toggleItemPurchased(item.id);
+                });
+                
+                // Clique em qualquer lugar na linha para marcar/desmarcar
+                itemRow.addEventListener('click', function(e) {
+                    if (!e.target.closest('.action-btn') && !e.target.closest('.item-checkbox')) {
+                        checkbox.checked = !checkbox.checked;
+                        toggleItemPurchased(item.id);
+                    }
+                });
+                
+                // Editar item
+                editBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    editItem(item.id);
+                });
+                
+                // Excluir item
+                deleteBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    deleteItem(item.id);
+                });
+                
+                itemsList.appendChild(itemRow);
+            });
+        }
+        
+        // Função para alternar o status de comprado do item
+        function toggleItemPurchased(itemId) {
+            shoppingList = shoppingList.map(item => {
+                if (item.id === itemId) {
+                    return { ...item, purchased: !item.purchased };
+                }
+                return item;
+            });
+            
+            saveList();
+            renderItems();
+            updateSummary();
+        }
+        
+        // Função para editar um item
+        function editItem(itemId) {
+            const item = shoppingList.find(i => i.id === itemId);
+            
+            if (!item) return;
+            
+            // Preencher o formulário com os dados do item
+            itemNameInput.value = item.name;
+            itemQuantityInput.value = item.quantity;
+            itemUnitSelect.value = item.unit;
+            itemPriceInput.value = item.price;
+            itemCategorySelect.value = item.category;
+            itemNotesInput.value = item.notes;
+            itemPrioritySelect.value = item.priority;
+            
+            // Remover o item da lista
+            shoppingList = shoppingList.filter(i => i.id !== itemId);
+            
+            // Atualizar a interface
+            saveList();
+            renderItems();
+            updateSummary();
+            
+            // Focar no campo de nome
+            itemNameInput.focus();
+            
+            // Mostrar mensagem
+            showNotification(`Editando "${item.name}" - faça as alterações e clique em Adicionar`);
+        }
+        
+        // Função para excluir um item
+        function deleteItem(itemId) {
+            const item = shoppingList.find(i => i.id === itemId);
+            
+            if (!item) return;
+            
+            if (confirm(`Tem certeza que deseja remover "${item.name}" da lista?`)) {
+                shoppingList = shoppingList.filter(i => i.id !== itemId);
+                saveList();
+                renderItems();
+                updateSummary();
+                
+                showNotification(`"${item.name}" removido da lista`);
+            }
+        }
+        
+        // Função para limpar toda a lista
+        function clearList() {
+            if (shoppingList.length === 0) {
+                alert('A lista já está vazia!');
+                return;
+            }
+            
+            if (confirm('Tem certeza que deseja limpar toda a lista de compras? Esta ação não pode ser desfeita.')) {
+                shoppingList = [];
+                saveList();
+                renderItems();
+                updateSummary();
+                
+                showNotification('Lista de compras limpa com sucesso');
+            }
+        }
+        
+        // Função para atualizar o resumo
+        function updateSummary() {
+            const total = shoppingList.length;
+            const purchased = shoppingList.filter(item => item.purchased).length;
+            const pending = total - purchased;
+            
+            // Calcular valor total
+            let totalAmount = 0;
+            shoppingList.forEach(item => {
+                if (!item.purchased) {
+                    totalAmount += item.price * item.quantity;
+                }
+            });
+            
+            totalItemsEl.textContent = total;
+            purchasedItemsEl.textContent = purchased;
+            pendingItemsEl.textContent = pending;
+            totalAmountEl.textContent = `R$ ${totalAmount.toFixed(2)}`;
+        }
+        
+        // Função para salvar a lista no localStorage
+        function saveList() {
+            localStorage.setItem('shoppingList', JSON.stringify(shoppingList));
+        }
+        
+        // Função para mostrar notificação
+        function showNotification(message) {
+            // Criar elemento de notificação
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background-color: #27ae60;
+                color: white;
+                padding: 15px 25px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+                z-index: 1000;
+                font-weight: 500;
+                animation: slideIn 0.3s ease-out;
+            `;
+            
+            // Adicionar ao body
+            document.body.appendChild(notification);
+            
+            // Remover após 3 segundos
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+            
+            // Adicionar animações CSS
+            if (!document.querySelector('#notification-styles')) {
+                const style = document.createElement('style');
+                style.id = 'notification-styles';
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    @keyframes slideOut {
+                        from { transform: translateX(0); opacity: 1; }
+                        to { transform: translateX(100%); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+        
+        // Adicionar itens de exemplo
+        function addExampleItems() {
+            const exampleItems = [
+                { id: 1, name: 'Arroz', quantity: 1, unit: 'kg', price: 6.99, category: 'hortifruti', notes: 'Integral', priority: 'alta', purchased: false, date: new Date().toLocaleDateString('pt-BR') },
+                { id: 2, name: 'Feijão', quantity: 1, unit: 'kg', price: 8.49, category: 'hortifruti', notes: 'Carioca', priority: 'alta', purchased: false, date: new Date().toLocaleDateString('pt-BR') },
+                { id: 3, name: 'Leite', quantity: 2, unit: 'l', price: 4.99, category: 'laticinios', notes: 'Integral', priority: 'media', purchased: true, date: new Date().toLocaleDateString('pt-BR') },
+                { id: 4, name: 'Pão de Forma', quantity: 1, unit: 'pct', price: 7.50, category: 'padaria', notes: 'Integral', priority: 'media', purchased: false, date: new Date().toLocaleDateString('pt-BR') },
+                { id: 5, name: 'Peito de Frango', quantity: 1, unit: 'kg', price: 18.90, category: 'carnes', notes: 'Filetado', priority: 'alta', purchased: false, date: new Date().toLocaleDateString('pt-BR') },
+                { id: 6, name: 'Refrigerante', quantity: 2, unit: 'l', price: 8.99, category: 'bebidas', notes: 'Cola', priority: 'baixa', purchased: false, date: new Date().toLocaleDateString('pt-BR') },
+                { id: 7, name: 'Sabão em Pó', quantity: 1, unit: 'pct', price: 12.90, category: 'limpeza', notes: 'Lavanda', priority: 'media', purchased: false, date: new Date().toLocaleDateString('pt-BR') }
+            ];
+            
+            shoppingList = exampleItems;
+            saveList();
+            renderItems();
+            updateSummary();
+        }
+    </script>
+</body>
+</html>
